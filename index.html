@@ -38,8 +38,12 @@ input {
 
 <h2>📜 论语每日一句</h2>
 
+<p>🔐 当前身份：Pi用户（测试版）</p>
+
 <input id="username" placeholder="输入你的名字">
 <p id="welcome"></p>
+
+<p>🪙 我的论语币：<span id="coin">0</span></p>
 
 <div class="card">
   <p id="text"></p>
@@ -49,10 +53,12 @@ input {
 
 <button onclick="like()">👍 点赞</button>
 <button onclick="next()">换一句</button>
+<button onclick="donate()">💰 打赏支持</button>
 
 <p id="top"></p>
-
 <p id="userRank"></p>
+
+<p id="donateText"></p>
 
 <p>🏆 点赞最多的经典，将成为“今日榜首”</p>
 
@@ -69,7 +75,7 @@ if(!user){
 document.getElementById("username").value = user;
 document.getElementById("welcome").innerText = "欢迎：" + user;
 
-// ===== 数据 =====
+// ===== 论语数据 =====
 const data = [
 ["学而时习之，不亦说乎？","学习并复习，是快乐的"],
 ["己所不欲，勿施于人","不要把不想要的给别人"],
@@ -84,16 +90,21 @@ let index = new Date().getDate() % data.length;
 // 点赞数据
 let likes = JSON.parse(localStorage.getItem("likes") || "{}");
 
-// 用户数据
+// 用户排行榜数据
 let users = JSON.parse(localStorage.getItem("users") || "{}");
 
-// ===== 页面加载 =====
+// 论语币
+let coins = parseInt(localStorage.getItem("coins") || "0");
+
+// ===== 初始化 =====
 function load(){
   document.getElementById("text").innerText = data[index][0];
   document.getElementById("exp").innerText = data[index][1];
 
   let key = "like_" + index;
   document.getElementById("likes").innerText = likes[key] || 0;
+
+  document.getElementById("coin").innerText = coins;
 
   showTop();
   showUserRank();
@@ -104,11 +115,15 @@ function like(){
   let key = "like_" + index;
   likes[key] = (likes[key] || 0) + 1;
 
-  // 用户累计点赞
+  // 用户点赞统计
   users[user] = (users[user] || 0) + 1;
+
+  // 发“论语币”
+  coins = coins + 1;
 
   localStorage.setItem("likes", JSON.stringify(likes));
   localStorage.setItem("users", JSON.stringify(users));
+  localStorage.setItem("coins", coins);
 
   load();
 }
@@ -155,6 +170,13 @@ function showUserRank(){
   document.getElementById("userRank").innerHTML = text;
 }
 
+// ===== 打赏 =====
+function donate(){
+  document.getElementById("donateText").innerHTML =
+  "🙏 感谢支持！<br>未来将支持 Pi 打赏（测试阶段）";
+}
+
+// ===== 启动 =====
 load();
 
 </script>
