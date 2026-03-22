@@ -5,9 +5,28 @@
 <title>论语每日一句</title>
 
 <style>
-body {font-family: Arial; text-align:center; padding:30px; background:#f5f5f5;}
-.card {background:white; padding:20px; border-radius:12px;}
-button {margin:10px; padding:10px 20px;}
+body {
+  font-family: Arial;
+  text-align: center;
+  padding: 30px;
+  background: #f5f5f5;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+}
+
+input {
+  padding: 8px;
+  margin-top: 10px;
+}
 </style>
 
 </head>
@@ -16,10 +35,13 @@ button {margin:10px; padding:10px 20px;}
 
 <h2>📜 论语每日一句</h2>
 
+<input id="username" placeholder="输入你的名字">
+<p id="welcome"></p>
+
 <div class="card">
-<p id="text"></p>
-<p id="exp"></p>
-<p>👍 点赞数：<span id="likes">0</span></p>
+  <p id="text"></p>
+  <p id="exp"></p>
+  <p>👍 点赞数：<span id="likes">0</span></p>
 </div>
 
 <button onclick="like()">👍 点赞</button>
@@ -27,8 +49,22 @@ button {margin:10px; padding:10px 20px;}
 
 <p id="top"></p>
 
+<p>🏆 点赞最多的经典，将成为“今日榜首”</p>
+
 <script>
 
+// ===== 用户系统 =====
+let user = localStorage.getItem("user") || "";
+
+if(!user){
+  user = prompt("请输入你的名字");
+  localStorage.setItem("user", user);
+}
+
+document.getElementById("username").value = user;
+document.getElementById("welcome").innerText = "欢迎：" + user;
+
+// ===== 数据 =====
 const data = [
 ["学而时习之，不亦说乎？","学习并复习，是快乐的"],
 ["己所不欲，勿施于人","不要把不想要的给别人"],
@@ -40,6 +76,7 @@ const data = [
 let index = new Date().getDate() % data.length;
 let likes = JSON.parse(localStorage.getItem("likes") || "{}");
 
+// ===== 加载 =====
 function load(){
   document.getElementById("text").innerText = data[index][0];
   document.getElementById("exp").innerText = data[index][1];
@@ -50,6 +87,7 @@ function load(){
   showTop();
 }
 
+// ===== 点赞 =====
 function like(){
   let key = "like_" + index;
   likes[key] = (likes[key] || 0) + 1;
@@ -57,11 +95,13 @@ function like(){
   load();
 }
 
+// ===== 换一句 =====
 function next(){
   index = Math.floor(Math.random()*data.length);
   load();
 }
 
+// ===== 排行榜 =====
 function showTop(){
   let arr = [];
 
