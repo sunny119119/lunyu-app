@@ -16,11 +16,14 @@ body {
   background: white;
   padding: 20px;
   border-radius: 12px;
+  margin: 20px 0;
 }
 
 button {
   margin: 10px;
   padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
 }
 
 input {
@@ -49,6 +52,8 @@ input {
 
 <p id="top"></p>
 
+<p id="userRank"></p>
+
 <p>🏆 点赞最多的经典，将成为“今日榜首”</p>
 
 <script>
@@ -73,10 +78,16 @@ const data = [
 ["学而不思则罔，思而不学则殆","学与思要结合"]
 ];
 
+// 今日一句
 let index = new Date().getDate() % data.length;
+
+// 点赞数据
 let likes = JSON.parse(localStorage.getItem("likes") || "{}");
 
-// ===== 加载 =====
+// 用户数据
+let users = JSON.parse(localStorage.getItem("users") || "{}");
+
+// ===== 页面加载 =====
 function load(){
   document.getElementById("text").innerText = data[index][0];
   document.getElementById("exp").innerText = data[index][1];
@@ -85,13 +96,20 @@ function load(){
   document.getElementById("likes").innerText = likes[key] || 0;
 
   showTop();
+  showUserRank();
 }
 
 // ===== 点赞 =====
 function like(){
   let key = "like_" + index;
   likes[key] = (likes[key] || 0) + 1;
+
+  // 用户累计点赞
+  users[user] = (users[user] || 0) + 1;
+
   localStorage.setItem("likes", JSON.stringify(likes));
+  localStorage.setItem("users", JSON.stringify(users));
+
   load();
 }
 
@@ -101,7 +119,7 @@ function next(){
   load();
 }
 
-// ===== 排行榜 =====
+// ===== 内容排行榜 =====
 function showTop(){
   let arr = [];
 
@@ -116,6 +134,25 @@ function showTop(){
 
   document.getElementById("top").innerText =
     "🔥最受欢迎：" + data[top.i][0] + "（👍"+top.v+"）";
+}
+
+// ===== 用户排行榜 =====
+function showUserRank(){
+  let arr = [];
+
+  for(let name in users){
+    arr.push({name:name, v:users[name]});
+  }
+
+  arr.sort((a,b)=>b.v-a.v);
+
+  let text = "🏆 用户排行榜：<br>";
+
+  for(let i=0;i<Math.min(3, arr.length);i++){
+    text += (i+1) + ". " + arr[i].name + "（👍"+arr[i].v+"）<br>";
+  }
+
+  document.getElementById("userRank").innerHTML = text;
 }
 
 load();
