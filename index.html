@@ -53,7 +53,8 @@ button {
 
 <script>
 
-// 数据
+<script>
+
 const data = [
 ["学而时习之，不亦说乎？","学习并复习，是快乐的"],
 ["己所不欲，勿施于人","不要把不想要的给别人"],
@@ -61,6 +62,52 @@ const data = [
 ["知之为知之，不知为不知","知道就是知道"],
 ["学而不思则罔，思而不学则殆","学与思要结合"]
 ];
+
+let index = new Date().getDate() % data.length;
+
+let likes = JSON.parse(localStorage.getItem("likes") || "{}");
+
+function load(){
+  document.getElementById("text").innerText = data[index][0];
+  document.getElementById("exp").innerText = data[index][1];
+
+  let key = "like_" + index;
+  document.getElementById("likes").innerText = likes[key] || 0;
+
+  showTop();
+}
+
+function like(){
+  let key = "like_" + index;
+  likes[key] = (likes[key] || 0) + 1;
+  localStorage.setItem("likes", JSON.stringify(likes));
+  load();
+}
+
+function next(){
+  index = Math.floor(Math.random()*data.length);
+  load();
+}
+
+function showTop(){
+  let arr = [];
+
+  for(let i=0;i<data.length;i++){
+    let key = "like_" + i;
+    arr.push({i:i, v:likes[key]||0});
+  }
+
+  arr.sort((a,b)=>b.v-a.v);
+
+  let top = arr[0];
+
+  document.getElementById("top").innerText =
+    "🔥最受欢迎：" + data[top.i][0] + "（👍"+top.v+"）";
+}
+
+load();
+
+</script>
 
 // 根据日期自动选一句
 let today = new Date().getDate();
