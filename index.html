@@ -5,37 +5,11 @@
 <title>论语每日一句</title>
 
 <style>
-body {
-  font-family: Arial;
-  text-align: center;
-  padding: 30px;
-  background: #f5f5f5;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-button {
-  padding: 10px 20px;
-  margin: 10px;
-  border-radius: 8px;
-  border: none;
-}
-
-.like {
-  background: #ff4d4f;
-  color: white;
-}
-
-.next {
-  background: #1890ff;
-  color: white;
-}
+body {font-family: Arial; text-align:center; padding:30px; background:#f5f5f5;}
+.card {background:white; padding:20px; border-radius:12px;}
+button {margin:10px; padding:10px 20px;}
 </style>
+
 </head>
 
 <body>
@@ -43,15 +17,15 @@ button {
 <h2>📜 论语每日一句</h2>
 
 <div class="card">
-  <p id="text"></p>
-  <p id="exp"></p>
-  <p>👍 点赞数：<span id="likes">0</span></p>
+<p id="text"></p>
+<p id="exp"></p>
+<p>👍 点赞数：<span id="likes">0</span></p>
 </div>
 
-<button class="like" onclick="like()">👍 点赞</button>
-<button class="next" onclick="next()">换一句</button>
+<button onclick="like()">👍 点赞</button>
+<button onclick="next()">换一句</button>
 
-<script>
+<p id="top"></p>
 
 <script>
 
@@ -64,7 +38,6 @@ const data = [
 ];
 
 let index = new Date().getDate() % data.length;
-
 let likes = JSON.parse(localStorage.getItem("likes") || "{}");
 
 function load(){
@@ -103,40 +76,6 @@ function showTop(){
 
   document.getElementById("top").innerText =
     "🔥最受欢迎：" + data[top.i][0] + "（👍"+top.v+"）";
-}
-
-load();
-
-</script>
-
-// 根据日期自动选一句
-let today = new Date().getDate();
-let index = today % data.length;
-
-// 读取点赞（本地存储）
-let likes = JSON.parse(localStorage.getItem("likes") || "{}");
-
-// 初始化
-function load(){
-  document.getElementById("text").innerText = data[index][0];
-  document.getElementById("exp").innerText = data[index][1];
-
-  let key = "like_" + index;
-  document.getElementById("likes").innerText = likes[key] || 0;
-}
-
-// 点赞
-function like(){
-  let key = "like_" + index;
-  likes[key] = (likes[key] || 0) + 1;
-  localStorage.setItem("likes", JSON.stringify(likes));
-  document.getElementById("likes").innerText = likes[key];
-}
-
-// 换一句（随机）
-function next(){
-  index = Math.floor(Math.random()*data.length);
-  load();
 }
 
 load();
